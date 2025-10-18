@@ -1,1 +1,1 @@
-# Simple avito searcher
+# Simple avito parser
