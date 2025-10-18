@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+
+{% block title %}Результаты поиска - Avito Parser{% endblock %}
+
+{% block content %}
+<div class="results-section">
+    <div class="results-header" data-aos="fade-down">
+        <div class="header-content">
+            <h2>Результаты поиска</h2>
+            <p class="results-count">{{ items|length }} объявлений найдено</p>
+        </div>
+        <div class="header-actions">
+            <button onclick="sortTable()" class="btn-outline sort-btn">
+                <span class="btn-icon">📊</span>
+                Сортировать по цене
+            </button>
+            <a href="{{ url_for('index') }}" class="btn-primary">
+                <span class="btn-icon">🔍</span>
+                Новый поиск
+            </a>
+        </div>
+    </div>
+
+    {% if items %}
+    <div class="results-container" data-aos="fade-up">
+        <div class="table-wrapper">
+            <table id="resultsTable" class="results-table">
+                <thead>
+                    <tr>
+                        <th onclick="sortTable(0)" class="sortable">
+                            <span>Цена</span>
+                            <span class="sort-icon">↕️</span>
+                        </th>
+                        <th>Название</th>
+                        <th>Город</th>
+                        <th>Описание</th>
+                        <th>Действия</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in items %}
+                    <tr class="result-row" data-aos="fade-right" data-aos-delay="{{ loop.index * 50 }}">
+                        <td class="price-cell" data-price="{{ item.price.replace(' ', '') if item.price != 'Цена не указана' else '0' }}">
+                            <div class="price-badge">
+                                {{ item.price }}
+                            </div>
+                        </td>
+                        <td class="title-cell">
+                            <div class="title-content">
+                                {{ item.title }}
+                            </div>
+                        </td>
+                        <td class="city-cell">
+                            <div class="city-badge">
+                                {{ item.city }}
+                            </div>
+                        </td>
+                        <td class="description-cell">
+                            <div class="description-content">
+                                {{ item.description[:100] }}{% if item.description|length > 100 %}...{% endif %}
+                            </div>
+                        </td>
+                        <td class="actions-cell">
+                            <a href="{{ item.url }}" target="_blank" class="action-btn view-btn">
+                                <span class="btn-icon">👁️</span>
+                                Смотреть
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% else %}
+    <div class="empty-state" data-aos="zoom-in">
+        <div class="empty-icon">😔</div>
+        <h3>Объявления не найдены</h3>
+        <p>Попробуйте изменить поисковый запрос или повторить поиск позже</p>
+        <a href="{{ url_for('index') }}" class="btn-primary">
+            <span class="btn-icon">🔍</span>
+            Новый поиск
+        </a>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+let sortDirection = 1;
+
+function sortTable(columnIndex = 0) {
+    const table = document.getElementById('resultsTable');
+    const tbody = table.querySelector('tbody');
+    const rows = Array.from(tbody.querySelectorAll('tr'));
+    
+    rows.sort((a, b) => {
+        const priceA = parseInt(a.querySelector('.price-cell').getAttribute('data-price'));
+        const priceB = parseInt(b.querySelector('.price-cell').getAttribute('data-price'));
+        return (priceB - priceA) * sortDirection;
+    });
+    
+    sortDirection *= -1;
+    
+    // Анимация перестановки
+    rows.forEach((row, index) => {
+        row.style.transition = `transform 0.3s ease ${index * 0.05}s, opacity 0.3s ease ${index * 0.05}s`;
+        row.style.transform = 'translateX(-20px)';
+        row.style.opacity = '0';
+        
+        setTimeout(() => {
+            tbody.appendChild(row);
+            row.style.transform = 'translateX(0)';
+            row.style.opacity = '1';
+        }, 300 + index * 50);
+    });
+}
+</script>
+{% endblock %}

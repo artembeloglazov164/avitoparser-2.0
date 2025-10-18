@@ -1,0 +1,1 @@
+# Simple avito searcher

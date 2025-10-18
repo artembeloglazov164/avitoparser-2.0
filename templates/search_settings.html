@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+
+{% block title %}Настройки поиска - Avito Parser{% endblock %}
+
+{% block content %}
+<div class="settings-section">
+    <div class="settings-card" data-aos="fade-up">
+        <div class="settings-header">
+            <h2>Настройки парсинга</h2>
+            <div class="search-badge">
+                <span class="badge-icon">🔍</span>
+                {{ query }}
+            </div>
+        </div>
+        
+        <div class="search-stats" data-aos="fade-right" data-aos-delay="200">
+            <div class="stat-item">
+                <div class="stat-number">{{ total_pages }}</div>
+                <div class="stat-label">страниц найдено</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">{{ max_pages }}</div>
+                <div class="stat-label">максимум страниц</div>
+            </div>
+        </div>
+
+        <form method="POST" action="{{ url_for('parse') }}" class="settings-form" data-aos="fade-up" data-aos-delay="300">
+            <div class="form-group">
+                <label class="form-label">
+                    <span class="label-icon">📄</span>
+                    Сколько страниц парсить?
+                </label>
+                <div class="input-with-slider">
+                    <input type="number" 
+                           id="pages" 
+                           name="pages" 
+                           value="1" 
+                           min="1" 
+                           max="{{ max_pages }}"
+                           required
+                           class="number-input">
+                    <div class="slider-container">
+                        <input type="range" 
+                               min="1" 
+                               max="{{ max_pages }}" 
+                               value="1" 
+                               class="page-slider"
+                               oninput="document.getElementById('pages').value = this.value">
+                    </div>
+                </div>
+                <div class="input-hint">Выберите от 1 до {{ max_pages }} страниц</div>
+            </div>
+            
+            <div class="form-actions">
+                <button type="submit" class="btn-primary parse-btn">
+                    <span class="btn-spinner"></span>
+                    <span class="btn-text">Запустить парсинг</span>
+                    <span class="btn-icon">✨</span>
+                </button>
+                <a href="{{ url_for('index') }}" class="btn-secondary">
+                    <span class="btn-icon">↩️</span>
+                    Назад к поиску
+                </a>
+            </div>
+        </form>
+
+        <div class="process-info" data-aos="fade-up" data-aos-delay="400">
+            <h3>Как это работает?</h3>
+            <div class="process-steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <strong>Автоматический сбор</strong>
+                        <p>Система пройдется по выбранным страницам</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <strong>Анализ данных</strong>
+                        <p>Извлечение цен, описаний и контактов</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <strong>Удобный просмотр</strong>
+                        <p>Сортировка и фильтрация результатов</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Анимация слайдера
+const slider = document.querySelector('.page-slider');
+const numberInput = document.getElementById('pages');
+
+slider.addEventListener('input', function() {
+    numberInput.value = this.value;
+});
+
+numberInput.addEventListener('input', function() {
+    slider.value = this.value;
+});
+</script>
+{% endblock %}

@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}Главная - Avito Parser{% endblock %}
+
+{% block content %}
+<div class="hero-section">
+    <div class="hero-content" data-aos="fade-up">
+        <div class="hero-text">
+            <h1 class="hero-title">
+                Находите лучшие предложения 
+                <span class="gradient-text">на Avito</span>
+            </h1>
+            <p class="hero-description">
+                Мощный парсер для поиска и анализа объявлений. 
+                Быстро, удобно, эффективно.
+            </p>
+        </div>
+        
+        <div class="search-section" data-aos="fade-up" data-aos-delay="200">
+            <form method="POST" action="{{ url_for('search') }}" class="search-form">
+                <div class="search-input-container">
+                    <input type="text" 
+                           name="query" 
+                           placeholder="Что ищем? Например: iPhone 13, ноутбук, квартира..."
+                           required
+                           minlength="2"
+                           class="search-input">
+                    <button type="submit" class="search-btn">
+                        <span class="btn-text">Найти</span>
+                        <span class="btn-icon">🚀</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <div class="features-grid" data-aos="fade-up" data-aos-delay="400">
+            <div class="feature-card">
+                <div class="feature-icon">⚡</div>
+                <h3>Быстрый поиск</h3>
+                <p>Мгновенный парсинг тысяч объявлений</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📊</div>
+                <h3>Умная сортировка</h3>
+                <p>Сортировка по цене и релевантности</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">💾</div>
+                <h3>История запросов</h3>
+                <p>Все ваши поиски сохраняются</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

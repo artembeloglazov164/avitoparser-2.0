@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block title %}История поиска - Avito Parser{% endblock %}
+
+{% block content %}
+<div class="history-section">
+    <div class="history-header" data-aos="fade-down">
+        <div class="header-content">
+            <h2>История поиска</h2>
+            <p class="history-count">{{ searches|length }} запросов в истории</p>
+        </div>
+        <a href="{{ url_for('index') }}" class="btn-primary">
+            <span class="btn-icon">🔍</span>
+            Новый поиск
+        </a>
+    </div>
+
+    {% if searches %}
+    <div class="history-grid" data-aos="fade-up">
+        {% for search in searches %}
+        <div class="history-card" data-aos="flip-left" data-aos-delay="{{ loop.index * 100 }}">
+            <div class="card-header">
+                <h3 class="search-query">{{ search.query }}</h3>
+                <div class="search-date">{{ search.created_at }}</div>
+            </div>
+            <div class="card-stats">
+                {% if search.total_items %}
+                <div class="stat">
+                    <div class="stat-value">{{ search.total_items }}</div>
+                    <div class="stat-label">объявлений</div>
+                </div>
+                {% endif %}
+                {% if search.total_pages %}
+                <div class="stat">
+                    <div class="stat-value">{{ search.total_pages }}</div>
+                    <div class="stat-label">страниц</div>
+                </div>
+                {% endif %}
+            </div>
+            <div class="card-actions">
+                <button class="btn-outline small-btn" onclick="repeatSearch('{{ search.query }}')">
+                    <span class="btn-icon">🔄</span>
+                    Повторить
+                </button>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state" data-aos="zoom-in">
+        <div class="empty-icon">📚</div>
+        <h3>История поиска пуста</h3>
+        <p>Вы еще не выполняли поисковые запросы</p>
+        <a href="{{ url_for('index') }}" class="btn-primary">
+            <span class="btn-icon">🔍</span>
+            Выполнить поиск
+        </a>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+function repeatSearch(query) {
+    window.location.href = "{{ url_for('index') }}?query=" + encodeURIComponent(query);
+}
+
+// Автозаполнение поиска из URL параметров
+window.addEventListener('DOMContentLoaded', function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const query = urlParams.get('query');
+    if (query) {
+        document.querySelector('input[name="query"]').value = query;
+    }
+});
+</script>
+{% endblock %}
